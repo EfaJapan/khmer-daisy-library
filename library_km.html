@@ -6,28 +6,29 @@
 <title>បណ្ណាល័យ មេឌៀ DAISY ខ្មែរ — Khmer Multimedia DAISY Library</title>
 <style>
   :root {
-    --efa-blue: #0065A4;
-    --efa-dark: #004070;
-    --efa-light: #E6F2FA;
-    --efa-accent: #F39800;
-    --efa-green: #4CAF50;
-    --efa-red: #E53935;
+    --efa-blue: #00AEEF;
+    --efa-dark: #0072CE;
+    --efa-navy: #004A9F;
+    --efa-light: #E8F6FF;
+    --efa-accent: #FF8C00;
+    --efa-green: #2ECC71;
+    --efa-red: #FF6B6B;
     --text-main: #1a2a3a;
     --text-sub: #5a6a7a;
     --radius: 16px;
-    --shadow: 0 4px 24px rgba(0,65,112,0.10);
+    --shadow: 0 4px 24px rgba(0,114,206,0.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Khmer OS', 'Noto Sans Khmer', 'Segoe UI', sans-serif;
-    background: #f4f8fc;
+    background: #F5FCFF;
     color: var(--text-main);
     min-height: 100vh;
   }
 
   /* ===== HEADER ===== */
   .site-header {
-    background: linear-gradient(135deg, var(--efa-dark) 0%, var(--efa-blue) 100%);
+    background: linear-gradient(135deg, #0072CE 0%, #00AEEF 100%);
     color: white;
     padding: 0;
     position: sticky;
@@ -73,6 +74,7 @@
   .btn-about:hover { background: rgba(255,255,255,0.25); }
   .user-badge {
     background: var(--efa-accent);
+    box-shadow: 0 2px 8px rgba(255,140,0,0.35);
     color: white;
     border-radius: 20px;
     padding: 5px 12px;
@@ -92,7 +94,7 @@
   }
   .hero-text h2 {
     font-size: 1.7em;
-    color: var(--efa-dark);
+    color: #004A9F;
     line-height: 1.4;
     margin-bottom: 10px;
   }
@@ -121,8 +123,8 @@
     padding: 0 20px;
   }
   .notice-bar .notice {
-    background: #fff8e1;
-    border-left: 4px solid var(--efa-accent);
+    background: #FFF8E6;
+    border-left: 4px solid #FF8C00;
     border-radius: 8px;
     padding: 10px 14px;
     font-size: 0.82em;
@@ -144,7 +146,7 @@
     text-align: center;
   }
   .login-card h2 {
-    color: var(--efa-dark);
+    color: #0072CE;
     font-size: 1.2em;
     margin-bottom: 6px;
   }
@@ -167,7 +169,7 @@
   .login-card input:focus { border-color: var(--efa-blue); }
   .btn-primary {
     width: 100%;
-    background: var(--efa-blue);
+    background: linear-gradient(135deg, #0072CE, #00AEEF);
     color: white;
     border: none;
     border-radius: 10px;
@@ -176,9 +178,10 @@
     font-family: inherit;
     font-weight: 700;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: opacity 0.2s;
+    box-shadow: 0 4px 16px rgba(0,114,206,0.35);
   }
-  .btn-primary:hover { background: var(--efa-dark); }
+  .btn-primary:hover { opacity: 0.88; }
   .login-register {
     margin-top: 16px;
     font-size: 0.83em;
@@ -214,12 +217,12 @@
     gap: 8px;
     font-size: 1.05em;
     font-weight: 700;
-    color: var(--efa-dark);
+    color: #004A9F;
     margin-bottom: 14px;
     margin-top: 24px;
   }
   .section-title .badge {
-    background: var(--efa-red);
+    background: #FF6B6B;
     color: white;
     border-radius: 12px;
     padding: 2px 10px;
@@ -286,7 +289,7 @@
     height: 160px;
     object-fit: cover;
     display: block;
-    background: var(--efa-light);
+    background: #E8F6FF;
   }
   .card-cover-placeholder {
     width: 100%;
@@ -301,7 +304,7 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    background: var(--efa-red);
+    background: #FF6B6B;
     color: white;
     border-radius: 10px;
     padding: 2px 8px;
@@ -319,7 +322,7 @@
   .card-title {
     font-size: 0.92em;
     font-weight: 700;
-    color: var(--efa-dark);
+    color: #004A9F;
     line-height: 1.3;
     margin-bottom: 2px;
   }
@@ -342,8 +345,8 @@
     margin: 6px 0;
   }
   .tag {
-    background: var(--efa-light);
-    color: var(--efa-dark);
+    background: #E8F6FF;
+    color: #004A9F;
     border-radius: 6px;
     padding: 1px 7px;
     font-size: 0.7em;
@@ -352,7 +355,7 @@
     display: block;
     width: 100%;
     margin-top: 8px;
-    background: var(--efa-blue);
+    background: linear-gradient(135deg, #FF8C00, #FFB347);
     color: white;
     border: none;
     border-radius: 8px;
@@ -362,10 +365,11 @@
     font-weight: 700;
     cursor: pointer;
     text-align: center;
-    transition: background 0.2s;
+    transition: opacity 0.2s, transform 0.15s;
     text-decoration: none;
+    box-shadow: 0 3px 10px rgba(255,140,0,0.35);
   }
-  .btn-download:hover { background: var(--efa-dark); }
+  .btn-download:hover { opacity: 0.88; transform: translateY(-1px); }
   .btn-coming {
     display: block;
     width: 100%;
@@ -383,7 +387,7 @@
 
   /* ===== FOOTER ===== */
   .site-footer {
-    background: var(--efa-dark);
+    background: #004A9F;
     color: rgba(255,255,255,0.75);
     padding: 28px 20px 16px;
     margin-top: 40px;
@@ -443,7 +447,7 @@
   .footer-warning {
     text-align: center;
     font-size: 0.78em;
-    color: #ffcc66;
+    color: #FFE082;
     margin-bottom: 14px;
     line-height: 1.6;
   }
@@ -462,14 +466,14 @@
     padding: 32px 28px;
   }
   .about-card h2 {
-    color: var(--efa-dark);
+    color: #004A9F;
     font-size: 1.3em;
     margin-bottom: 20px;
     border-bottom: 2px solid var(--efa-light);
     padding-bottom: 10px;
   }
   .about-card h3 {
-    color: var(--efa-blue);
+    color: #00AEEF;
     font-size: 1em;
     margin: 20px 0 8px;
   }
@@ -486,8 +490,8 @@
     margin-top: 10px;
   }
   .about-org-tag {
-    background: var(--efa-light);
-    color: var(--efa-dark);
+    background: #E8F6FF;
+    color: #004A9F;
     border-radius: 10px;
     padding: 10px 14px;
     font-size: 0.85em;
@@ -503,7 +507,7 @@
     flex-shrink: 0;
   }
   .about-contact {
-    background: var(--efa-light);
+    background: #E8F6FF;
     border-radius: 10px;
     padding: 14px 16px;
     margin-top: 16px;
@@ -511,8 +515,8 @@
     line-height: 1.8;
   }
   .btn-back {
-    background: var(--efa-light);
-    color: var(--efa-dark);
+    background: #E8F6FF;
+    color: #004A9F;
     border: none;
     border-radius: 10px;
     padding: 9px 20px;
@@ -644,7 +648,7 @@
     align-items: flex-start;
   }
   .er-step-num {
-    background: var(--efa-blue);
+    background: linear-gradient(135deg, #0072CE, #00AEEF);
     color: white;
     width: 32px;
     height: 32px;
@@ -657,7 +661,7 @@
     flex-shrink: 0;
   }
   .er-step-content h3 {
-    color: var(--efa-dark);
+    color: #004A9F;
     font-size: 0.95em;
     margin-bottom: 6px;
   }
@@ -686,17 +690,17 @@
     text-decoration: none;
     transition: background 0.2s;
   }
-  .er-dl-btn:hover { background: var(--efa-dark); }
+  .er-dl-btn:hover { background: #004A9F; }
   .er-dl-btn.android { background: #2e7d32; }
   .er-dl-btn.android:hover { background: #1b5e20; }
   .er-dl-btn.ios { background: #1a1a1a; }
   .er-dl-btn.ios:hover { background: #000; }
   .er-tip {
-    background: var(--efa-light);
+    background: #E8F6FF;
     border-radius: 10px;
     padding: 12px 14px;
     font-size: 0.82em;
-    color: var(--efa-dark);
+    color: #004A9F;
     line-height: 1.7;
     margin-top: 8px;
   }
@@ -741,7 +745,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    background: #f4f8fc;
+    background: #F5FCFF;
     border-radius: 10px;
     padding: 10px 12px;
   }
@@ -795,7 +799,7 @@
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    background: #f4f8fc;
+    background: #F5FCFF;
     border-radius: 10px;
     padding: 10px 10px;
     font-size: 0.82em;
@@ -813,8 +817,8 @@
   .er-sub-title {
     font-size: 0.82em;
     font-weight: 700;
-    color: var(--efa-dark);
-    background: var(--efa-light);
+    color: #004A9F;
+    background: #E8F6FF;
     border-radius: 6px;
     padding: 5px 10px;
     margin-bottom: 8px;
@@ -1552,10 +1556,12 @@ function switchOS(os, btn) {
 function driveUrlToThumb(url, size) {
   size = size || 120;
   if (!url) return '';
-  var m = url.match(/\/d\/([^/]+)/);
-  if (m) return 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w' + size;
-  // already a thumbnail URL
   if (url.indexOf('thumbnail') !== -1) return url;
+  var parts = url.split('/d/');
+  if (parts.length >= 2) {
+    var fileId = parts[1].split('/')[0].split('?')[0];
+    if (fileId) return 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w' + size;
+  }
   return '';
 }
 
