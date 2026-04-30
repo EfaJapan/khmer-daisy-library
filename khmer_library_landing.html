@@ -640,8 +640,10 @@
 
   function driveToThumb(url, sz) {
     if (!url) return '';
-    var m = url.match(/\/d\/([\w-]+)/);
-    return m ? 'https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w' + (sz || 120) : url;
+    var parts = url.split('/d/');
+    if (parts.length < 2) return '';
+    var fileId = parts[1].split('/')[0].split('?')[0];
+    return fileId ? 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w' + (sz || 120) : '';
   }
 
   function buildOrgs(config) {
