@@ -827,7 +827,86 @@
   }
 
 
-
+/* ============================================================
+   代替アプリ案内（ガイドモーダル内・クメール版）
+============================================================ */
+.er-alt-notice {
+  background: linear-gradient(135deg, #FFF8E8, #FFF0CC);
+  border: 2px solid #E8920A;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 4px;
+}
+.er-alt-notice-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.er-alt-badge {
+  background: #E8920A;
+  color: white;
+  font-weight: 800;
+  font-size: 0.8em;
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.er-alt-title {
+  font-size: 0.88em;
+  font-weight: 700;
+  color: #7a5c10;
+  line-height: 1.5;
+}
+.er-alt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.er-alt-card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+}
+.er-alt-card-title {
+  font-size: 0.76em;
+  font-weight: 700;
+  color: var(--efa-blue);
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.er-alt-app-name {
+  font-size: 0.85em;
+  font-weight: 700;
+  color: var(--efa-dark);
+  margin-bottom: 4px;
+}
+.er-alt-desc {
+  font-size: 0.75em;
+  color: var(--text-sub);
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.er-alt-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-size: 0.75em;
+  font-weight: 700;
+  color: white;
+  margin-right: 4px;
+  margin-bottom: 4px;
+  transition: opacity .2s;
+}
+.er-alt-btn:hover { opacity: .82; }
+.er-alt-btn.android  { background: #2a7a3b; }
+.er-alt-btn.win-blue { background: var(--efa-blue); }
+.er-alt-btn.
 </style>
 </head>
 <body>
@@ -1165,7 +1244,52 @@
           </div>
         </div>
       </div>
+<hr class="er-section-divider">
 
+      <!-- 代替アプリ案内 -->
+      <div class="er-alt-notice">
+        <div class="er-alt-notice-header">
+          <span class="er-alt-badge">!</span>
+          <span class="er-alt-title">
+            ប្រសិនបើ EasyReader ពិបាកប្រើ, សូមសាកល្បងកម្មវិធីផ្សេង
+            <span style="display:block;font-size:0.88em;font-weight:400;color:#9a7020;margin-top:2px;">
+              If EasyReader's bookshelf is full or speed control is difficult, try these alternatives.
+            </span>
+          </span>
+        </div>
+        <div class="er-alt-grid">
+
+          <!-- Android: Colibrio -->
+          <div class="er-alt-card">
+            <div class="er-alt-card-title">🤖 Android</div>
+            <div class="er-alt-app-name">Colibrio Reader</div>
+            <div class="er-alt-desc">
+              គ្មានដែនកំណត់ · កែល្បឿនសំឡេង · ឥតគិតថ្លៃ<br>
+              <small>No bookshelf limit · Flexible speed · Free · Android only</small>
+            </div>
+            <a class="er-alt-btn android"
+               href="https://play.google.com/store/apps/details?id=com.colibrio.reader"
+               target="_blank" rel="noopener noreferrer">▶ Google Play</a>
+          </div>
+
+          <!-- Windows: Thorium -->
+          <div class="er-alt-card">
+            <div class="er-alt-card-title">💻 Windows</div>
+            <div class="er-alt-app-name">Thorium Reader</div>
+            <div class="er-alt-desc">
+              គាំទ្រ EPUB3 · DAISY · កែល្បឿន · ឥតគិតថ្លៃ<br>
+              <small>EPUB3 & DAISY · Speed control · Free</small>
+            </div>
+            <a class="er-alt-btn win-blue"
+               href="https://thorium.edrlab.org/en/"
+               target="_blank" rel="noopener noreferrer">🌐 Official</a>
+            <a class="er-alt-btn win-ms"
+               href="https://apps.microsoft.com/detail/9nfzp1g7m2sc"
+               target="_blank" rel="noopener noreferrer">🪟 MS Store</a>
+          </div>
+
+        </div>
+      </div>
     </div>
   </div>
 </div>
