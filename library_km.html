@@ -1416,7 +1416,7 @@ const SITE_CONFIG = {
   country: "កម្ពុជា",
   title_local: "បណ្ណាល័យ មេឌៀ DAISY ខ្មែរ",
   title_en: "Khmer Multimedia DAISY Library",
-  sheets_api_url: "https://script.google.com/macros/s/AKfycbymrYOl6ytFjTjI2O47cOlRgTWLYRaC1nteUfkgI-BcNmtVkP0OW5avN1_vVSAX3bJCNQ/exec",
+  sheets_api_url: "https://script.google.com/macros/s/AKfycbzBtCy3Ugt7hqpeFseNveL3-bJu1KvizlH0bJfFMfOKJiBgPauJftC95kB-Llc9tgZt2w/exec",
   registration_form_url: "https://docs.google.com/forms/d/e/1FAIpQLScIU3Nwo7U3BXCi8zz2DZWDxSHVI_h2tCOcP8ilK4p0cc-yQQ/viewform?usp=publish-editor",
   contact_email: "info@efa-japan.org",
   new_arrival_days: 30,
@@ -1615,7 +1615,7 @@ function bookCard(b) {
   const ageBadge = b.Age_Group ? `<span class="tag">👶 ${b.Age_Group}</span>` : '';
   const catBadge = b.Category ? `<span class="tag">${esc(b.Category)}</span>` : '';
   const dlBtn = b.Download_Link
-    ? `<a class="btn-download" href="${b.Download_Link}" target="_blank"
+    ? `<a class="btn-download" href="${b.Download_Link}" download
          onclick="logDl(${JSON.stringify(b).replace(/"/g,'&quot;')})"
        >⬇ Download E-pub</a>`
     : `<span class="btn-coming">⏳ កំពុងរៀបចំ / Coming Soon</span>`;
