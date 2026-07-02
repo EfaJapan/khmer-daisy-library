@@ -261,6 +261,8 @@
     margin-top: 32px;
     flex-wrap: wrap;
   }
+   .orgs-subsection + .orgs-subsection { margin-top: 40px; }
+  
   .org-item a {
     display: flex;
     flex-direction: column;
@@ -528,10 +530,8 @@
 
 <!-- ORGS -->
 <section class="orgs-section">
-  <div class="section-label">Operating Organizations</div>
-  <div class="section-title">អង្គការដំណើរការ</div>
-  <div class="orgs-grid" id="landing-orgs-grid">
-    <!-- populated by buildOrgs() -->
+  <div id="landing-orgs-container">
+    <!-- カテゴリーごとのブロックがbuildOrgs()により自動生成される -->
   </div>
 </section>
 
@@ -648,32 +648,55 @@
     return fileId ? 'https://drive.google.com/thumbnail?id=' + fileId + '&sz=w' + (sz || 120) : '';
   }
 
-  function buildOrgs(config) {
+  // カテゴリー定義：表示順・クメール語/英語ラベルを一元管理
+// 将来カテゴリーを追加する場合は、この配列に1行追加するだけでよい
+var ORG_CATEGORIES = [
+  { key: 'operator', label_en: 'Operating Organizations',      label_km: 'អង្គការដំណើរការ' },
+  { key: 'provider', label_en: 'Book-Providing Organizations', label_km: 'អង្គការផ្តល់សៀវភៅ' },
+  { key: 'sponsor',  label_en: 'Sponsor Organizations',        label_km: 'អង្គការឧបត្ថម្ភ' }
+];
+
+function buildOrgs(config) {
     var configOrgs = [];
     var i = 1;
     while (config && config['org_' + i + '_name']) {
       configOrgs.push({
-        name:  String(config['org_' + i + '_name'] || ''),
-        logo:  String(config['org_' + i + '_logo_url'] || ''),
-        link:  String(config['org_' + i + '_link'] || '#'),
-        order: parseInt(config['org_' + i + '_order']) || i
+        name:     String(config['org_' + i + '_name'] || ''),
+        logo:     String(config['org_' + i + '_logo_url'] || ''),
+        link:     String(config['org_' + i + '_link'] || '#'),
+        order:    parseInt(config['org_' + i + '_order']) || i,
+        category: String(config['org_' + i + '_category'] || 'operator')
       });
       i++;
     }
     var orgs = configOrgs.length > 0 ? configOrgs : FALLBACK_ORGS;
-    orgs.sort(function(a, b) { return a.order - b.order; });
 
-    var grid = document.getElementById('landing-orgs-grid');
-    if (!grid) return;
-    grid.innerHTML = orgs.map(function(org) {
-      var logoSrc = driveToThumb(org.logo, 120);
-      return '<div class="org-item"><a href="' + org.link + '" target="_blank">' +
-        (logoSrc ? '<div class="org-logo-wrap"><img src="' + logoSrc + '" alt="' + org.name.replace(/<[^>]+>/g,'') + '"></div>' : '') +
-        '<span class="org-name">' + org.name + '</span>' +
-        '</a></div>';
-    }).join('');
+    function renderGrid(list) {
+      return list.map(function(org) {
+        var logoSrc = driveToThumb(org.logo, 120);
+        return '<div class="org-item"><a href="' + org.link + '" target="_blank">' +
+          (logoSrc ? '<div class="org-logo-wrap"><img src="' + logoSrc + '" alt="' + org.name.replace(/<[^>]+>/g,'') + '"></div>' : '') +
+          '<span class="org-name">' + org.name + '</span>' +
+          '</a></div>';
+      }).join('');
+    }
+
+    var container = document.getElementById('landing-orgs-container');
+    if (!container) return;
+
+    var html = '';
+    ORG_CATEGORIES.forEach(function(cat) {
+      var list = orgs.filter(function(o) { return o.category === cat.key; });
+      if (list.length === 0) return; // データがないカテゴリーは出力しない
+      list.sort(function(a, b) { return a.order - b.order; });
+      html += '<div class="orgs-subsection">' +
+                '<div class="section-label">' + cat.label_en + '</div>' +
+                '<div class="section-title">' + cat.label_km + '</div>' +
+                '<div class="orgs-grid">' + renderGrid(list) + '</div>' +
+              '</div>';
+    });
+    container.innerHTML = html;
   }
-
   // Show fallback immediately, then overwrite with Config data
   buildOrgs({});
   fetch(GAS_URL + '?action=config')
