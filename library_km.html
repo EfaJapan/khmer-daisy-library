@@ -439,6 +439,25 @@
     text-align: center;
     color: rgba(255,255,255,0.85);
   }
+  .footer-org-group { margin-top: 20px; }
+.footer-org-group:first-child { margin-top: 0; }
+.footer-org-label {
+  font-size: 0.7em;
+  color: rgba(255,255,255,0.55);
+  letter-spacing: 0.03em;
+  margin-bottom: 10px;
+}
+.footer-org-row {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.about-org-cat-label {
+  font-size: 0.95em;
+  color: rgba(255,255,255,0.85);
+  margin: 4px 0 10px;
+}
   .footer-copy {
     text-align: center;
     font-size: 0.75em;
@@ -1376,7 +1395,7 @@
     <p>All children who need reading support — including children with disabilities,
     children from low-income families, and children in remote areas.</p>
 
-    <h3>🏛️ អង្គការដំណើរការ / Operating Organizations</h3>
+    <h3>🏛️ អង្គការ / Organizations</h3>
         <div class="about-orgs" id="about-orgs">
       <!-- populated by buildOrgs() from Config API -->
     </div>
@@ -1694,19 +1713,85 @@ function driveUrlToThumb(url, size) {
   return '';
 }
 
+// カテゴリー定義：表示順・クメール語/英語ラベルを一元管理
+var ORG_CATEGORIES = [
+  { key: 'operator', label_en: 'Operating Organizations',      label_km: 'អង្គការដំណើរការ' },
+  { key: 'provider', label_en: 'Book-Providing Organizations', label_km: 'អង្គការផ្តល់សៀវភៅ' },
+  { key: 'sponsor',  label_en: 'Sponsor Organizations',        label_km: 'អង្គការឧបត្ថម្ភ' }
+];
+
 function buildOrgs(config) {
-  // Build orgs from Config sheet if available
   var configOrgs = [];
   var i = 1;
   while (config && config['org_' + i + '_name']) {
     configOrgs.push({
-      name:    String(config['org_' + i + '_name'] || ''),
-      logo:    String(config['org_' + i + '_logo_url'] || ''),
-      link:    String(config['org_' + i + '_link'] || '#'),
-      order:   parseInt(config['org_' + i + '_order']) || i
+      name:     String(config['org_' + i + '_name'] || ''),
+      logo:     String(config['org_' + i + '_logo_url'] || ''),
+      link:     String(config['org_' + i + '_link'] || '#'),
+      order:    parseInt(config['org_' + i + '_order']) || i,
+      category: String(config['org_' + i + '_category'] || 'operator')
     });
     i++;
   }
+  var orgs = configOrgs.length > 0 ? configOrgs : SITE_CONFIG.orgs_fallback.map(function(o) {
+    return {
+      name: o.name, logo: o.logo_url || '', link: o.link || '#',
+      order: o.order || 1, category: o.category || 'operator'
+    };
+  });
+
+  function logoSrcOf(org) {
+    return org.logo
+      ? (org.logo.indexOf('base64') !== -1 ? org.logo : driveUrlToThumb(org.logo, 120))
+      : '';
+  }
+
+  function renderFooterGroup(list) {
+    return list.map(function(org) {
+      var logoSrc = logoSrcOf(org);
+      return '<div class="footer-org">' +
+        '<a href="' + org.link + '" target="_blank">' +
+        (logoSrc ? '<div class="footer-org-logo-wrap"><img src="' + logoSrc + '" alt="' + org.name.replace(/<[^>]+>/g,'') + '"></div>' : '') +
+        '<span>' + org.name + '</span>' +
+        '</a></div>';
+    }).join('');
+  }
+
+  function renderAboutGroup(list) {
+    return list.map(function(org) {
+      var logoSrc = logoSrcOf(org);
+      return '<a href="' + org.link + '" target="_blank" class="about-org-tag" style="text-decoration:none;display:flex;align-items:center;gap:10px">' +
+        (logoSrc ? '<img src="' + logoSrc + '" alt="" style="width:52px;height:52px;object-fit:contain;background:white;border-radius:6px;padding:2px;flex-shrink:0">' : '') +
+        '<span>' + org.name.replace(/<br>/g,' ') + '</span>' +
+        '</a>';
+    }).join('');
+  }
+
+  var footerHtml = '';
+  var aboutHtml  = '';
+
+  ORG_CATEGORIES.forEach(function(cat) {
+    var list = orgs.filter(function(o) { return o.category === cat.key; });
+    if (list.length === 0) return;
+    list.sort(function(a, b) { return a.order - b.order; });
+
+    footerHtml +=
+      '<div class="footer-org-group">' +
+      '<div class="footer-org-label">' + cat.label_en + ' / ' + cat.label_km + '</div>' +
+      '<div class="footer-org-row">' + renderFooterGroup(list) + '</div>' +
+      '</div>';
+
+    aboutHtml +=
+      '<h4 class="about-org-cat-label">🏛️ ' + cat.label_km + ' / ' + cat.label_en + '</h4>' +
+      '<div class="about-org-cat-row" style="display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px">' +
+      renderAboutGroup(list) + '</div>';
+  });
+
+  var fe = document.getElementById('footer-orgs');
+  if (fe) fe.innerHTML = footerHtml;
+  var ae = document.getElementById('about-orgs');
+  if (ae) ae.innerHTML = aboutHtml;
+}
 
   // Sort by order
   configOrgs.sort(function(a, b) { return a.order - b.order; });
