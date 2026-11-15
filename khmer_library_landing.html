@@ -290,14 +290,19 @@ img { max-width: 100%; }
   </div>
 </section>
 
+<section class="lr-news-section" id="lr-news" hidden><div class="lr-news-in">
+  <h2 class="lr-news-h">📢 ដំណឹង <span>News</span></h2>
+  <ul class="lr-news-list" id="lr-news-list"></ul>
+</div></section>
+
 <section class="block">
   <div class="wrap">
     <div class="sec-title"><span class="bubble bg-sun">🪜</span><h2>អានសៀវភៅ ងាយៗ ៤ ជំហាន<span class="en">4 easy steps</span></h2></div>
     <ol class="steps">
       <li><span class="num">1</span><span class="ico">✏️</span><div><strong>ចុះឈ្មោះ</strong><span class="en">Register with your email</span></div></li>
       <li><span class="num">2</span><span class="ico">🔑</span><div><strong>បញ្ចូលអ៊ីម៉ែល ហើយចូល</strong><span class="en">Enter your email and open the library</span></div></li>
-      <li><span class="num">3</span><span class="ico">⬇️</span><div><strong>ជ្រើសសៀវភៅ ហើយទាញយក</strong><span class="en">Choose a book and download it</span></div></li>
-      <li><span class="num">4</span><span class="ico">🎧</span><div><strong>បើកក្នុងកម្មវិធី ហើយស្ដាប់</strong><span class="en">Open it in the reader app and listen</span></div></li>
+      <li><span class="num">3</span><span class="ico">▶️</span><div><strong>ជ្រើសសៀវភៅ ហើយចុច “▶ អាន”</strong><span class="en">Choose a book and tap “▶ Read”</span></div></li>
+      <li><span class="num">4</span><span class="ico">🎧</span><div><strong>ស្ដាប់ និងអានតាមជាមួយគ្នា</strong><span class="en">Listen and read along — no app needed (download is still available)</span></div></li>
     </ol>
   </div>
 </section>
@@ -361,7 +366,7 @@ var LIB = (function () {
   var CATALOG_URL = 'https://efajapan.github.io/khmer-daisy-library/library_km.html';
   var KEY_EMAIL = 'lib_user_email';       // 既存と同じキー（前回のメールを引き継ぐ）
   var KEY_SESSION = 'lib_user';           // 既存と同じキー（sessionStorage）
-  var KEY_BOOKS = 'km_books_cache_v1';
+  var KEY_BOOKS = 'km_books_cache_v2';   // v1.3: v1 is removed below
   var KEY_CONFIG = 'km_config_cache_v1';
   var BOOKS_MAX_AGE = 7 * 24 * 3600 * 1000;    // 1週間より古い控えは使わない
   var CONFIG_MAX_AGE = 30 * 24 * 3600 * 1000;
@@ -399,10 +404,16 @@ var LIB = (function () {
   }
   function writeCache(key, data) { lsSet(key, JSON.stringify({ t: Date.now(), data: data })); }
 
+  lsRemove('km_books_cache_v1');
   var booksPromise = null;
+  // v1.3: with a pass (Read here), the catalog comes without download links. An expired pass → the catalog without it
+  function lrTok() { try { return (window.LR && LR.token()) || ''; } catch (e) { return ''; } }
   function fetchBooks() {
     if (booksPromise) return booksPromise;
-    booksPromise = fetchJsonWithRetry(API + '?action=books', 3).then(function (data) {
+    var tok = lrTok();
+    booksPromise = fetchJsonWithRetry(API + '?action=books' + (tok ? '&token=' + encodeURIComponent(tok) : ''), 3).then(function (data) {
+      if (data && data.error === 'auth' && tok) { try { LR.clearToken(); } catch (e) {} booksPromise = null; return fetchBooks(); }
+      if (data && Array.isArray(data.books)) { try { LR.setServerReader(!!data.reader); } catch (e) {} data = data.books; }
       if (!Array.isArray(data)) throw new Error('bad books response');
       writeCache(KEY_BOOKS, data);
       return data;
@@ -493,6 +504,7 @@ var LIB = (function () {
     API: API, CATALOG_URL: CATALOG_URL, KEY_EMAIL: KEY_EMAIL,
     lsGet: lsGet, lsSet: lsSet, lsRemove: lsRemove, sleep: sleep,
     fetchJsonWithRetry: fetchJsonWithRetry, fetchBooks: fetchBooks, cachedBooks: cachedBooks,
+    resetBooks: function () { booksPromise = null; },
     fetchConfig: fetchConfig, cachedConfig: cachedConfig, auth: auth,
     saveSession: saveSession, loadSession: loadSession, clearSession: clearSession,
     esc: esc, driveThumb: driveThumb, orgsHtml: orgsHtml
@@ -557,6 +569,10 @@ setTimeout(function () { LIB.fetchBooks().catch(function () {}); }, 300);
     var books = LIB.fetchBooks().catch(function () {});
     LIB.auth(email).then(function (data) {
       if (data && data.ok) {
+        // v1.3: keep the pass for Read here (the catalog page uses it)
+        try { if (data.token) localStorage.setItem('km_lr_token_v1', JSON.stringify({ token: data.token, exp: data.exp }));
+              if (typeof data.reader === 'boolean') localStorage.setItem('km_lr_reader', data.reader ? '1' : '0');
+              if (data.token && data.attr_needed && Array.isArray(data.attr_choices)) localStorage.setItem('km_lr_attr_ask', JSON.stringify(data.attr_choices)); } catch (e) {}
         LIB.saveSession({ email: email, name: data.name || '' });
         // 一覧が届くのを少しだけ待ってから移動（届いていればカタログがすぐ表示される）
         return Promise.race([books, LIB.sleep(2500)]).then(function () {
@@ -571,6 +587,53 @@ setTimeout(function () { LIB.fetchBooks().catch(function () {}); }, 300);
       reset();
     });
   };
+})();
+</script>
+
+<style>
+.lr-news-section{background:#FFF8EC;padding:26px 16px;border-top:4px solid #F39800}
+.lr-news-section[hidden]{display:none}
+.lr-news-in{max-width:860px;margin:0 auto}
+.lr-news-h{font-size:22px;color:#004070;margin:0 0 12px;font-weight:800}
+.lr-news-h span{font-size:13px;color:#546E7A;font-weight:600;margin-left:6px}
+.lr-news-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.lr-news-item{background:#fff;border:2px solid #F7D9A8;border-radius:16px;padding:14px 16px}
+.lr-news-item.imp{border-color:#F39800;box-shadow:0 4px 14px rgba(243,152,0,.18)}
+.lr-news-meta{display:flex;gap:8px;align-items:center;font-size:13px;color:#546E7A;margin-bottom:4px}
+.lr-news-new{background:#E53935;color:#fff;font-weight:800;font-size:11px;padding:2px 8px;border-radius:999px}
+.lr-news-t{font-size:17px;font-weight:800;color:#1A2E45;line-height:1.6}
+.lr-news-te{font-size:13px;color:#546E7A;margin-top:2px}
+.lr-news-b{font-size:15px;color:#1A2E45;line-height:1.8;margin-top:6px;white-space:pre-line}
+.lr-news-be{font-size:13px;color:#546E7A;line-height:1.6;margin-top:2px;white-space:pre-line}
+</style>
+<script>
+// v1.3: notices (NEWS sheet). Shown at once from the device copy (or the first notice), then refreshed
+(function () {
+  var KEY = 'km_lr_news_v1';
+  var DEF = [{ date: '2026-11-16', km: 'ឥឡូវនេះ អាចអានសៀវភៅក្នុងបណ្ណាល័យបានភ្លាមៗ', en: 'You can now read books right in the library',
+    body_km: 'ចុច "▶ អាន" ហើយអានបានភ្លាមៗ មិនចាំបាច់ប្រើកម្មវិធី។ អាចប្ដូរល្បឿន និងពណ៌បាន។ នៅតែអាចទាញយកបានដូចមុន។',
+    body_en: 'Just tap "▶ Read" — no app needed. You can change the reading speed and colors. Download is still available.', important: true }];
+  var e = LIB.esc;
+  function fmt(d) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(d || ''); return m ? Number(m[3]) + '/' + Number(m[2]) + '/' + m[1] : e(d); }
+  function render(items) {
+    var L = document.getElementById('lr-news-list'), S = document.getElementById('lr-news');
+    if (!L || !S) return; S.hidden = !items.length;
+    var now = Date.now();
+    L.innerHTML = items.map(function (n) {
+      var isNew = n.date && (now - new Date(n.date + 'T00:00:00+07:00').getTime()) / 86400000 <= 30;
+      return '<li class="lr-news-item' + (n.important ? ' imp' : '') + '"><div class="lr-news-meta"><span>' + fmt(n.date) + '</span>' +
+        (isNew ? '<span class="lr-news-new">NEW</span>' : '') + '</div>' +
+        (n.km ? '<div class="lr-news-t">' + e(n.km) + '</div>' : '') + (n.en ? '<div class="lr-news-te">' + e(n.en) + '</div>' : '') +
+        (n.body_km ? '<div class="lr-news-b">' + e(n.body_km) + '</div>' : '') + (n.body_en ? '<div class="lr-news-be">' + e(n.body_en) + '</div>' : '') + '</li>';
+    }).join('');
+  }
+  var c = null; try { c = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (x) {}
+  render(Array.isArray(c) ? c : DEF);
+  LIB.fetchJsonWithRetry(LIB.API + '?action=news', 2).then(function (j) {
+    if (!j || !Array.isArray(j.news)) return;
+    try { localStorage.setItem(KEY, JSON.stringify(j.news)); } catch (x) {}
+    render(j.news);
+  }).catch(function () {});
 })();
 </script>
 </body>
